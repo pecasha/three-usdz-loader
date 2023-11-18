@@ -1,6 +1,7 @@
 var getUsdModule = (function () {
   var _scriptDir = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : undefined;
-  if (typeof __filename !== 'undefined') _scriptDir = _scriptDir || __filename;
+  if (typeof window === "undefined" && typeof __filename !== 'undefined') _scriptDir = _scriptDir || __filename;
+  if (_scriptDir?.startsWith('file://')) _scriptDir = _scriptDir.replace('file:///', "").replace('//', '/');
   return function (getUsdModule, depPath, maxSupportedMemoryGrowth) {
     getUsdModule = getUsdModule || {};
 
@@ -1042,7 +1043,7 @@ var getUsdModule = (function () {
     ENVIRONMENT_IS_WEB = typeof window === 'object';
     ENVIRONMENT_IS_WORKER = typeof importScripts === 'function';
     ENVIRONMENT_IS_NODE =
-      typeof process === 'object' && typeof process.versions === 'object' && typeof process.versions.node === 'string';
+      typeof process === 'object' && typeof process.versions === 'object' && typeof process.versions.node === 'string' && typeof window === 'undefined' && typeof document === 'undefined';
     ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIRONMENT_IS_WORKER;
     if (Module['ENVIRONMENT']) {
       throw new Error(
